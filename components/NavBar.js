@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { DataContext } from '../store/GlobalState'
+import Cookies from 'js-cookie'
 
 function NavBar() {
   const router = useRouter()
@@ -16,6 +17,13 @@ function NavBar() {
     } else {
       return ""
     }
+  }
+
+  const handleLogout = () => {
+    Cookies.remove('refreshtoken', { path: 'api/auth/accessToken' })
+    localStorage.removeItem('firstLogin')
+    dispatch({ type: 'AUTH', payload: {} })
+    dispatch({ type: 'NOTIFY', payload: { success: 'Logged out' } })
   }
 
   const loggedRouter = () => {
@@ -35,7 +43,7 @@ function NavBar() {
         <div className="dropdown-menu" aria-labelledby="navbarDropdown">
           <a className="dropdown-item" href="#">Profile</a>
           <div className="dropdown-divider"></div>
-          <a className="dropdown-item" href="#">Logout</a>
+          <a className="dropdown-item" onClick={handleLogout}>Logout</a>
         </div>
       </li>
     )
