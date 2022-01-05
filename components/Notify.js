@@ -4,7 +4,8 @@ import Loading from './Loading'
 import Toast from './Toast'
 
 const Notify = () => {
-  const [state, dispatch] = useContext(DataContext)
+  // ↓{state, dispatch}だとエラー
+  const { state, dispatch } = useContext(DataContext)
   const { notify } = state
 
   return (

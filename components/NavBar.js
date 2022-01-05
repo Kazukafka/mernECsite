@@ -1,9 +1,14 @@
-import React from 'react'
+/* eslint-disable @next/next/no-img-element */
+import React, { useContext } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { DataContext } from '../store/GlobalState'
 
 function NavBar() {
   const router = useRouter()
+  const { state, dispatch } = useContext(DataContext)
+  const { auth } = state
+
   const isActive = (r) => {
     if (r === router.pathname) {
       // ↓＿入れないとレイアウトがずれる
@@ -12,6 +17,30 @@ function NavBar() {
       return ""
     }
   }
+
+  const loggedRouter = () => {
+    return (
+      <li className="nav-item dropdown">
+        <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          <img src={auth.user.avatar} alt={auth.user.avatar}
+            style={{
+              borderRadius: '50%',
+              width: '30px',
+              height: '30px',
+              transform: 'translateY(-3px)',
+              marginRight: '3px'
+            }} />
+          {auth.user.name}
+        </a>
+        <div className="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a className="dropdown-item" href="#">Profile</a>
+          <div className="dropdown-divider"></div>
+          <a className="dropdown-item" href="#">Logout</a>
+        </div>
+      </li>
+    )
+  }
+
   return (
     <nav className="navbar navbar-expand-lg navbar-light bg-light">
       <Link href="/">
@@ -30,23 +59,17 @@ function NavBar() {
                 <i className="fas fa-shopping-cart" aria-hidden='true'></i>Cart</a>
             </Link>
           </li>
-          <li className="nav-item">
-            <Link href="/signin">
-              <a className={"nav-link" + isActive('/signup')}>
-                <i className="far fa-user" aria-hidden='true'></i>Sign in</a>
-            </Link>
-          </li>
+          {
+            Object.keys(auth).length === 0
+              ? <li className="nav-item">
+                <Link href="/signin">
+                  <a className={"nav-link" + isActive('/signup')}>
+                    <i className="far fa-user" aria-hidden='true'></i>Sign in</a>
+                </Link>
+              </li>
+              : loggedRouter()
+          }
 
-          {/* <li className="nav-item dropdown">
-            <a className="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-              User Name
-            </a>
-            <div className="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a className="dropdown-item" href="#">Profile</a>
-              <div className="dropdown-divider"></div>
-              <a className="dropdown-item" href="#">Logout</a>
-            </div>
-          </li> */}
         </ul>
       </div>
     </nav>
